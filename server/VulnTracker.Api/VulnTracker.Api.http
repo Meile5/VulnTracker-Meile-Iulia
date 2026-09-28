@@ -1,0 +1,6 @@
+@VulnTracker.Api_HostAddress = http://localhost:5286
+
+GET {{VulnTracker.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,6 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker", "VulnTracker\VulnTracker.csproj", "{524935C0-3BE4-4BE5-A5F0-11BDD9C7355E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Application", "server\VulnTracker.Application\VulnTracker.Application.csproj", "{304DA525-00CA-4390-8816-1605496DD030}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "server\Application\Application.csproj", "{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Infrastructure", "server\VulnTracker.Infrastructure\VulnTracker.Infrastructure.csproj", "{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Domain", "server\VulnTracker.Domain\VulnTracker.Domain.csproj", "{3906AE30-4549-435D-9ACE-C4BC9900B5DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Api", "server\VulnTracker.Api\VulnTracker.Api.csproj", "{49E6EC3E-8135-4E4C-8813-AE02E06FF4EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Tests", "server\VulnTracker.Tests\VulnTracker.Tests.csproj", "{DE5B2B63-21E6-422C-AAA6-1C7F3EFC47E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +18,29 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{524935C0-3BE4-4BE5-A5F0-11BDD9C7355E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{524935C0-3BE4-4BE5-A5F0-11BDD9C7355E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{524935C0-3BE4-4BE5-A5F0-11BDD9C7355E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{524935C0-3BE4-4BE5-A5F0-11BDD9C7355E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{304DA525-00CA-4390-8816-1605496DD030}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{304DA525-00CA-4390-8816-1605496DD030}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{304DA525-00CA-4390-8816-1605496DD030}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{304DA525-00CA-4390-8816-1605496DD030}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3906AE30-4549-435D-9ACE-C4BC9900B5DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3906AE30-4549-435D-9ACE-C4BC9900B5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3906AE30-4549-435D-9ACE-C4BC9900B5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3906AE30-4549-435D-9ACE-C4BC9900B5DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E6EC3E-8135-4E4C-8813-AE02E06FF4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E6EC3E-8135-4E4C-8813-AE02E06FF4EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E6EC3E-8135-4E4C-8813-AE02E06FF4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E6EC3E-8135-4E4C-8813-AE02E06FF4EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5B2B63-21E6-422C-AAA6-1C7F3EFC47E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5B2B63-21E6-422C-AAA6-1C7F3EFC47E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5B2B63-21E6-422C-AAA6-1C7F3EFC47E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5B2B63-21E6-422C-AAA6-1C7F3EFC47E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
