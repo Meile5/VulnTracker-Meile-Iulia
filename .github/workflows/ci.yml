@@ -15,10 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Aikido Security Scan
-        uses: AikidoSec/github-actions-scan@v1
+        uses: AikidoSec/github-actions-workflow@v1.0.13
         with:
-          api-key: ${{ secrets.AIKIDO_API_KEY }}
-          fail-on-severity: high
+          secret-key: ${{ secrets.AIKIDO_SECRET_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          minimum-severity: high
+          fail-on-dependency-scan: true
+          fail-on-sast-scan: true
           
   build-test:
     runs-on: ubuntu-latest
