@@ -11,18 +11,17 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.*" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-        <PackageReference Include="NUnit" Version="3.14.0" />
-        <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+        <PackageReference Include="xunit" Version="2.*" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.*">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="NUnit.Framework" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\VulnTracker.Api\VulnTracker.Api.csproj" />
+        <ProjectReference Include="..\VulnTracker.Api\VulnTracker.Api.csproj" />
     </ItemGroup>
 
 </Project>
