@@ -1,0 +1,12 @@
+@"
+**/bin/
+**/obj/
+.git/
+.idea/
+.vs/
+client/node_modules/
+client/dist/
+**/appsettings.Local.json
+.env
+docker-compose*.yml
+"@ | Out-File -Encoding utf8 .dockerignore

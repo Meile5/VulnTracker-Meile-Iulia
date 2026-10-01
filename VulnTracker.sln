@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Application", "server\VulnTracker.Application\VulnTracker.Application.csproj", "{304DA525-00CA-4390-8816-1605496DD030}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "server\Application\Application.csproj", "{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Infrastructure", "server\VulnTracker.Infrastructure\VulnTracker.Infrastructure.csproj", "{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VulnTracker.Domain", "server\VulnTracker.Domain\VulnTracker.Domain.csproj", "{3906AE30-4549-435D-9ACE-C4BC9900B5DA}"
@@ -22,10 +20,6 @@ Global
 		{304DA525-00CA-4390-8816-1605496DD030}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{304DA525-00CA-4390-8816-1605496DD030}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{304DA525-00CA-4390-8816-1605496DD030}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0A5AE86-6DE1-4ABA-9CBF-5B38EE8CEB88}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93E0C2B0-0FA8-40CA-850D-6A5FD381E840}.Release|Any CPU.ActiveCfg = Release|Any CPU
