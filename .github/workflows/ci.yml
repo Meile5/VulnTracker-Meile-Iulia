@@ -9,6 +9,17 @@ permissions:
   contents: read
 
 jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build  
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aikido Security Scan
+        uses: AikidoSec/github-actions-scan@v1
+        with:
+          api-key: ${{ secrets.AIKIDO_API_KEY }}
+          fail-on-severity: high
+          
   build-test:
     runs-on: ubuntu-latest
     services:
