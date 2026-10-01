@@ -17,7 +17,7 @@ jobs:
       - name: Aikido Security Scan
         uses: AikidoSec/github-actions-workflow@v1.0.13
         with:
-          secret-key: ${{ secrets.AIKIDO_SECRET_KEY }}
+          secret-key: ${{ secrets.AIKIDO_API_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           minimum-severity: high
           fail-on-dependency-scan: true
