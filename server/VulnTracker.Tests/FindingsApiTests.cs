@@ -3,8 +3,13 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using VulnTracker.Application.DTOs;
 using VulnTracker.Domain.Enums;
+using VulnTracker.Infrastructure.Database;
 using Xunit;
 
 namespace VulnTracker.Tests;
@@ -20,8 +25,20 @@ public class FindingsApiTests : IClassFixture<WebApplicationFactory<Program>>
 
     public FindingsApiTests(WebApplicationFactory<Program> factory)
     {
-        _client = factory.CreateClient();
+        var customFactory = factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureServices(services =>
+            {
+                services.RemoveAll<DbContextOptions<AppDbContext>>();
+                services.RemoveAll<IDbContextOptionsConfiguration<AppDbContext>>();
+
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseInMemoryDatabase("TestDb"));
+            });
+        });
+        _client = customFactory.CreateClient();
     }
+
 
     [Fact]
     public async Task Create_Then_Get_ReturnsCreatedFinding()
