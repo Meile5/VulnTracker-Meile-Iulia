@@ -19,6 +19,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<FindingService>();
 
+// --- Angular CORS---
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Angular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); 
+    });
+});
+
 // --- Authentication ---
 builder.Services
     .AddAuthentication(options =>
@@ -29,7 +41,8 @@ builder.Services
     .AddCookie(options =>
     {
         options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SameSite = SameSiteMode.None; 
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
     })
@@ -42,7 +55,7 @@ builder.Services
 
         options.ResponseType = OpenIdConnectResponseType.Code;
         options.UsePkce = true;
-        options.SaveTokens = true; 
+        options.SaveTokens = true;
 
         options.Scope.Clear();
         options.Scope.Add("openid");
@@ -53,6 +66,7 @@ builder.Services
         options.RequireHttpsMetadata = false; 
 
         options.TokenValidationParameters.NameClaimType = "preferred_username";
+        options.TokenValidationParameters.RoleClaimType = "role";
     });
 
 builder.Services.AddAuthorization();
@@ -73,10 +87,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("Angular"); 
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
 
-public partial class Program;   // needed later for integration tests
+public partial class Program;

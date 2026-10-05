@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
 import { AuthStore } from '../../../core/stores/auth.store';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { AuthStore } from '../../../core/stores/auth.store';
 })
 export class LoginComponent {
   private readonly authStore = inject(AuthStore);
+  private authService = inject(AuthService)
 
   protected readonly email = signal('');
   protected readonly password = signal('');
@@ -37,6 +39,6 @@ export class LoginComponent {
   }
 
   protected handleKeycloakLogin(): void {
-    this.authStore.loginWithKeycloak();
+    this.authService.loginWithKeycloak();
   }
 }
