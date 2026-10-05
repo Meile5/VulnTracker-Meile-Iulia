@@ -1,0 +1,70 @@
+﻿<div class="login-page">
+  <span class="sparkle sparkle-1">✨</span>
+  <span class="sparkle sparkle-2">💖</span>
+  <span class="sparkle sparkle-3">🎀</span>
+  <span class="sparkle sparkle-4">⭐</span>
+  <span class="sparkle sparkle-5">💅</span>
+  <span class="sparkle sparkle-6">✨</span>
+
+  <p-card class="login-card">
+    <div class="flex flex-col items-center gap-2 mb-6">
+      <span class="text-5xl">🎀</span>
+      <h1 class="login-title">VulnTracker</h1>
+      <p class="login-subtitle">heyyy welcome back bestie!! log in to slay ✨</p>
+    </div>
+
+    <form class="flex flex-col gap-5" (ngSubmit)="handleSubmit()">
+      <div class="flex flex-col gap-2">
+        <label for="email" class="login-label">email 💌</label>
+        <input
+          pInputText
+          id="email"
+          type="email"
+          class="login-input"
+          placeholder="you@sparkle.com"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          name="email"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="password" class="login-label">password 🔐</label>
+        <p-password
+          inputId="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          name="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          styleClass="login-password"
+          placeholder="supersecret123"
+        />
+      </div>
+
+      @if (errorMessage()) {
+        <p class="login-error">{{ errorMessage() }}</p>
+      }
+
+      <p-button
+        label="let's gooo 💫"
+        type="submit"
+        styleClass="login-submit-btn"
+        [loading]="isSubmitting()"
+      />
+
+      <div class="login-divider">
+        <span>or</span>
+      </div>
+
+      <p-button
+        label="log in with Keycloak 🔑"
+        type="button"
+        styleClass="login-keycloak-btn"
+        (onClick)="handleKeycloakLogin()"
+      />
+    </form>
+
+    <p class="login-footer">no account? ask your manager nicely 🥺</p>
+  </p-card>
+</div>
