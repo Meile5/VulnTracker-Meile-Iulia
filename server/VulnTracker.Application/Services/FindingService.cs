@@ -40,4 +40,30 @@ public class FindingService(IFindingRepository repo)
         var findings = await repo.SearchAsync(query, ct);
         return findings.Select(FindingResponse.From).ToList();
     }
+    
+    // the controller needs the entity itself for the resource check
+    public Task<Finding?> GetEntityAsync(Guid id, CancellationToken ct) => repo.GetAsync(id, ct);
+
+    public async Task<FindingResponse> UpdateAsync(
+        Finding finding, string? title, string? description, FindingStatus? status, CancellationToken ct)
+    {
+        // only overwrite what was sent, so partial updates work
+        if (!string.IsNullOrWhiteSpace(title)) finding.Title = title.Trim();
+        if (description is not null) finding.Description = description;
+        if (status is not null) finding.Status = status.Value;
+        finding.UpdatedAt = DateTimeOffset.UtcNow;
+
+        await repo.SaveChangesAsync(ct);
+        return FindingResponse.From(finding);
+    }
+
+    public async Task<FindingResponse> AssignAsync(Finding finding, string assigneeId, CancellationToken ct)
+    {
+        finding.AssigneeId = assigneeId;
+        finding.UpdatedAt = DateTimeOffset.UtcNow;
+
+        await repo.SaveChangesAsync(ct);
+        return FindingResponse.From(finding);
+    }
+    
 }

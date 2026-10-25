@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using VulnTracker.Api.Authorization;
 using VulnTracker.Application.Services;
 using VulnTracker.Infrastructure;
 using VulnTracker.Infrastructure.Database;
@@ -45,6 +48,11 @@ builder.Services
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
+        options.Events.OnRedirectToAccessDenied = ctx =>
+        {
+            ctx.Response.StatusCode = 403; 
+            return Task.CompletedTask;
+        };
     })
     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
     {
@@ -67,9 +75,30 @@ builder.Services
 
         options.TokenValidationParameters.NameClaimType = "preferred_username";
         options.TokenValidationParameters.RoleClaimType = "role";
+        
+        options.MapInboundClaims = false;
+        
+        options.Events.OnRedirectToIdentityProvider = ctx =>
+        {
+            if (ctx.Request.Path.StartsWithSegments("/api"))
+            {
+                ctx.Response.StatusCode = 401; 
+                ctx.HandleResponse();
+            }
+            return Task.CompletedTask;
+        };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(Policies.CanViewFindings,  p => p.RequireRole(Roles.Analyst, Roles.Developer, Roles.PM, Roles.Auditor))
+    .AddPolicy(Policies.CanCreateFinding, p => p.RequireRole(Roles.Analyst, Roles.PM))
+    .AddPolicy(Policies.CanUpdateFinding, p => p.RequireRole(Roles.Analyst, Roles.Developer, Roles.PM))
+    .AddPolicy(Policies.CanAssignFinding, p => p.RequireRole(Roles.Analyst, Roles.PM))
+    .AddPolicy(Policies.CanSetSla,        p => p.RequireRole(Roles.PM))
+    .AddPolicy(Policies.CanManageUsers,   p => p.RequireRole(Roles.PM))
+    .AddPolicy(Policies.CanViewAuditLogs, p => p.RequireRole(Roles.Auditor));
+
+builder.Services.AddSingleton<IAuthorizationHandler, FindingAuthorizationHandler>();
 
 var app = builder.Build();
 
@@ -93,6 +122,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/debug/me", (ClaimsPrincipal u) =>
+    u.Claims.Select(c => new { c.Type, c.Value })).RequireAuthorization();
+
 app.Run();
 
 public partial class Program;
