@@ -1,0 +1,15 @@
+﻿<div class="pink-card max-w-md flex flex-col gap-2">
+  <h2 class="pink-title text-2xl">SLA targets ⏰</h2>
+  <label class="pink-label">severity</label>
+  <select class="pink-input" [(ngModel)]="severity">
+    @for (s of severities; track s) {
+      <option [value]="s">{{ s }}</option>
+    }
+  </select>
+  <label class="pink-label">days to fix</label>
+  <input type="number" min="1" class="pink-input" [(ngModel)]="days" />
+  <button class="pink-btn mt-2" (click)="save()">save SLA 💖</button>
+  @if (msg()) {
+    <p class="pink-ok">{{ msg() }}</p>
+  }
+</div>

@@ -1,0 +1,26 @@
+﻿<div class="page-bg p-4 md:p-8">
+  <header class="flex flex-wrap items-center gap-3 mb-6">
+    <h1 class="pink-title text-4xl">VulnTracker 🎀</h1>
+    <span class="flex-1"></span>
+    <span class="font-bold text-pink-700">hi {{ auth.user()?.username }} 💖</span>
+    @for (r of auth.user()?.roles ?? []; track r) {
+      <span class="pink-chip">{{ r }}</span>
+    }
+    <button class="pink-btn-ghost" (click)="auth.logout()">log out</button>
+  </header>
+
+  <nav class="flex flex-wrap gap-2 mb-4">
+    @for (t of tabs(); track t.id) {
+      <button [class]="tab() === t.id ? 'pink-btn' : 'pink-btn-ghost'" (click)="tab.set(t.id)">
+        {{ t.label }}
+      </button>
+    }
+  </nav>
+
+  @switch (tab()) {
+    @case ('findings') { <app-findings-panel /> }
+    @case ('sla') { <app-sla-panel /> }
+    @case ('roles') { <app-roles-panel /> }
+    @case ('audit') { <app-audit-panel /> }
+  }
+</div>

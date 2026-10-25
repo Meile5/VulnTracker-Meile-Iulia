@@ -13,57 +13,11 @@
       <p class="login-subtitle">heyyy welcome back bestie!! log in to slay ✨</p>
     </div>
 
-    <form class="flex flex-col gap-5" (ngSubmit)="handleSubmit()">
-      <div class="flex flex-col gap-2">
-        <label for="email" class="login-label">email 💌</label>
-        <input
-          pInputText
-          id="email"
-          type="email"
-          class="login-input"
-          placeholder="you@sparkle.com"
-          [ngModel]="email()"
-          (ngModelChange)="email.set($event)"
-          name="email"
-        />
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label for="password" class="login-label">password 🔐</label>
-        <p-password
-          inputId="password"
-          [ngModel]="password()"
-          (ngModelChange)="password.set($event)"
-          name="password"
-          [feedback]="false"
-          [toggleMask]="true"
-          styleClass="login-password"
-          placeholder="supersecret123"
-        />
-      </div>
-
-      @if (errorMessage()) {
-        <p class="login-error">{{ errorMessage() }}</p>
-      }
-
-      <p-button
-        label="let's gooo 💫"
-        type="submit"
-        styleClass="login-submit-btn"
-        [loading]="isSubmitting()"
-      />
-
-      <div class="login-divider">
-        <span>or</span>
-      </div>
-
-      <p-button
-        label="log in with Keycloak 🔑"
-        type="button"
-        styleClass="login-keycloak-btn"
-        (onClick)="handleKeycloakLogin()"
-      />
-    </form>
+    <p-button
+      label="log in with Keycloak 🔑"
+      styleClass="login-submit-btn"
+      (onClick)="handleKeycloakLogin()"
+    />
 
     <p class="login-footer">no account? ask your manager nicely 🥺</p>
   </p-card>

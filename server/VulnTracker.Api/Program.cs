@@ -44,7 +44,7 @@ builder.Services
     .AddCookie(options =>
     {
         options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.None; 
+        options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; 
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
@@ -123,8 +123,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/debug/me", (ClaimsPrincipal u) =>
-    u.Claims.Select(c => new { c.Type, c.Value })).RequireAuthorization();
 
 app.Run();
 

@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+/* ---- pink theme for dashboard ---- */
+body { font-family: 'Quicksand', sans-serif; background: #fff0f7; }
+.page-bg { min-height: 100vh; background: linear-gradient(135deg, #ffd6ec, #ffe9f4 40%, #fff6fb); }
+.pink-card { background: #fff6fb; border: 3px solid #fff; border-radius: 24px; padding: 1.25rem;
+  box-shadow: 0 0 0 3px #ffc2e2, 0 12px 30px rgba(255, 60, 150, 0.2); }
+.pink-title { font-family: 'Pacifico', cursive; color: #ff4fa3; text-shadow: 2px 2px 0 #ffd6ec; }
+.pink-label { font-weight: 700; color: #d6377f; font-size: 0.85rem; }
+.pink-input { width: 100%; border: 2px solid #ffc2e2; border-radius: 14px; padding: 0.55rem 0.8rem; background: #fffafc; }
+.pink-input:focus { outline: none; border-color: #ff4fa3; box-shadow: 0 0 0 4px #ffd6ec; }
+.pink-btn { background: linear-gradient(135deg, #ff6fb3, #ff4fa3); color: #fff; font-weight: 700; border-radius: 16px;
+  padding: 0.5rem 1.1rem; box-shadow: 0 6px 14px rgba(255, 79, 163, 0.4); transition: transform 0.15s; cursor: pointer; }
+.pink-btn:hover { transform: translateY(-2px); }
+.pink-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.pink-btn-ghost { background: #fff6fb; border: 2px solid #ff8fc7; color: #d6377f; font-weight: 700;
+  border-radius: 16px; padding: 0.4rem 1rem; cursor: pointer; }
+.pink-chip { background: #ffd6ec; color: #d6377f; font-weight: 700; border-radius: 999px; padding: 0.2rem 0.8rem; }
+.pink-error { background: #fff0f6; border: 2px dashed #ff8fc7; color: #d6377f; border-radius: 14px; padding: 0.5rem 1rem; font-weight: 600; }
+.pink-ok { background: #f0fff6; border: 2px dashed #7fd8a6; color: #1f7a4a; border-radius: 14px; padding: 0.5rem 1rem; font-weight: 600; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(255, 79, 163, 0.25); display: flex;
+  align-items: center; justify-content: center; z-index: 50; padding: 1rem; }
+.modal { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 0.4rem; max-height: 90vh; overflow: auto; }

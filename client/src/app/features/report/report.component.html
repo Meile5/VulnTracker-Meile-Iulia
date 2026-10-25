@@ -1,0 +1,28 @@
+﻿<div class="page-bg flex items-center justify-center p-4">
+  <div class="pink-card w-full max-w-lg flex flex-col gap-2">
+    <h1 class="pink-title text-3xl text-center">report a vulnerability 🔍</h1>
+    <p class="text-center text-pink-700 font-semibold">
+      no account needed, you can only send, not read anything back
+    </p>
+
+    @if (sent()) {
+      <p class="pink-ok">thank you! we got your report 💌</p>
+    } @else {
+      <label class="pink-label">title</label>
+      <input class="pink-input" [(ngModel)]="title" />
+      <label class="pink-label">what did you find?</label>
+      <textarea class="pink-input" rows="4" [(ngModel)]="description"></textarea>
+      <label class="pink-label">affected system</label>
+      <input class="pink-input" [(ngModel)]="asset" />
+      <label class="pink-label">your email (optional)</label>
+      <input type="email" class="pink-input" [(ngModel)]="email" />
+      @if (error()) {
+        <p class="pink-error">{{ error() }}</p>
+      }
+      <button class="pink-btn mt-2" (click)="send()"
+              [disabled]="!title.trim() || !description.trim() || !asset.trim()">
+        send report 💖
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,15 @@
+﻿<div class="pink-card max-w-md flex flex-col gap-2">
+  <h2 class="pink-title text-2xl">user roles 👯</h2>
+  <label class="pink-label">Keycloak user ID</label>
+  <input class="pink-input" [(ngModel)]="userId" placeholder="paste a user id" />
+  <label class="pink-label">roles</label>
+  @for (r of roles; track r) {
+    <label class="flex items-center gap-2">
+      <input type="checkbox" (change)="toggle(r, $event)" /> {{ r }}
+    </label>
+  }
+  <button class="pink-btn mt-2" (click)="save()" [disabled]="!userId.trim()">save roles 💖</button>
+  @if (msg()) {
+    <p class="pink-ok">{{ msg() }}</p>
+  }
+</div>
