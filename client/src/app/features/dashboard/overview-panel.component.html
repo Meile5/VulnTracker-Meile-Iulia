@@ -1,0 +1,39 @@
+﻿@if (error()) {
+  <p class="pink-error">{{ error() }}</p>
+} @else if (summary(); as s) {
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="pink-card">
+      <h2 class="pink-title text-2xl mb-2">open findings 📊</h2>
+      <p class="text-5xl font-bold text-pink-600">{{ s.open }}</p>
+      <p [class]="s.overdue > 0 ? 'pink-error mt-3' : 'pink-ok mt-3'">
+        {{ s.overdue }} overdue against their SLA due date ⏰
+      </p>
+    </div>
+
+    <div class="pink-card">
+      <h2 class="pink-title text-2xl mb-2">open by severity</h2>
+      @for (r of severityRows(); track r.label) {
+        <div class="mb-2">
+          <div class="flex justify-between text-sm font-semibold"><span>{{ r.label }}</span><span>{{ r.count }}</span></div>
+          <div class="h-3 rounded-full bg-pink-100">
+            <div class="h-3 rounded-full bg-pink-500" [style.width.%]="r.pct"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="pink-card md:col-span-2">
+      <h2 class="pink-title text-2xl mb-2">by status</h2>
+      @for (r of statusRows(); track r.label) {
+        <div class="mb-2">
+          <div class="flex justify-between text-sm font-semibold"><span>{{ r.label }}</span><span>{{ r.count }}</span></div>
+          <div class="h-3 rounded-full bg-pink-100">
+            <div class="h-3 rounded-full bg-pink-500" [style.width.%]="r.pct"></div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <p>loading ✨</p>
+}

@@ -1,109 +1,28 @@
-﻿import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { AuthStore } from '../../core/stores/auth.store';
 import { FindingsService } from '../../core/services/findings.service';
-import { Finding, SEVERITIES, STATUSES } from '../../core/models/finding.models';
+import { Finding, SEVERITIES, STATUSES, statusLabel } from '../../core/models/finding.models';
 
 type Mode = 'create' | 'edit' | 'assign';
 type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
 
+const blankFilters = () => ({ text: '', asset: '', status: '', severity: '', mine: false });
+type Filters = ReturnType<typeof blankFilters>;
+
 const blankForm = () => ({
   title: '', description: '', affectedAsset: '', severity: 'Medium',
-  cvssScore: null as number | null, status: 'New', assigneeId: '',
+  cvssScore: null as number | null, status: 'New', assigneeId: '', dueDate: '',
 });
 
 @Component({
   selector: 'app-findings-panel',
   standalone: true,
   imports: [FormsModule, TableModule, TagModule],
-  template: `
-    <div class="pink-card">
-      <div class="flex flex-wrap items-center gap-3 mb-4">
-        <input class="pink-input max-w-xs" placeholder="search title or asset 🔍"
-               [ngModel]="search()" (ngModelChange)="search.set($event)" />
-        <span class="flex-1"></span>
-        @if (canCreate()) {
-          <button class="pink-btn" (click)="openCreate()">+ new finding</button>
-        }
-      </div>
-
-      @if (message() && !mode()) { <p class="pink-error">{{ message() }}</p> }
-
-      <p-table [value]="visible()" [paginator]="true" [rows]="8" [loading]="loading()" dataKey="id">
-        <ng-template #header>
-          <tr>
-            <th>Title</th><th>Asset</th><th>Severity</th><th>CVSS</th>
-            <th>Status</th><th>Assignee</th><th></th>
-          </tr>
-        </ng-template>
-        <ng-template #body let-f>
-          <tr>
-            <td>{{ f.title }}</td>
-            <td>{{ f.affectedAsset }}</td>
-            <td><p-tag [value]="f.severity" [severity]="tagSeverity(f.severity)" /></td>
-            <td>{{ f.cvssScore ?? '-' }}</td>
-            <td>{{ f.status }}</td>
-            <td>{{ f.assigneeId ? (f.assigneeId === auth.user()?.id ? 'you' : 'assigned') : '-' }}</td>
-            <td class="flex gap-2 justify-end">
-              @if (canEdit(f)) { <button class="pink-btn-ghost" (click)="openEdit(f)">edit</button> }
-              @if (canAssign()) { <button class="pink-btn-ghost" (click)="openAssign(f)">assign</button> }
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template #emptymessage>
-          <tr><td colspan="7">no findings yet ✨</td></tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    @if (mode(); as m) {
-      <div class="modal-backdrop" (click)="close()">
-        <div class="pink-card modal" (click)="$event.stopPropagation()">
-          <h2 class="pink-title text-2xl mb-2">
-            {{ m === 'create' ? 'new finding' : m === 'edit' ? 'edit finding' : 'assign finding' }}
-          </h2>
-
-          @if (m !== 'assign') {
-            <label class="pink-label">title</label>
-            <input class="pink-input" [(ngModel)]="form.title" />
-            <label class="pink-label">description</label>
-            <textarea class="pink-input" rows="3" [(ngModel)]="form.description"></textarea>
-          }
-          @if (m === 'create') {
-            <label class="pink-label">affected asset</label>
-            <input class="pink-input" [(ngModel)]="form.affectedAsset" />
-            <label class="pink-label">severity</label>
-            <select class="pink-input" [(ngModel)]="form.severity">
-              @for (s of severities; track s) { <option [value]="s">{{ s }}</option> }
-            </select>
-            <label class="pink-label">CVSS score (optional)</label>
-            <input type="number" min="0" max="10" step="0.1" class="pink-input" [(ngModel)]="form.cvssScore" />
-          }
-          @if (m === 'edit') {
-            <label class="pink-label">status</label>
-            <select class="pink-input" [(ngModel)]="form.status">
-              @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
-            </select>
-          }
-          @if (m === 'assign') {
-            <label class="pink-label">Keycloak user ID</label>
-            <input class="pink-input" [(ngModel)]="form.assigneeId" placeholder="paste a user id" />
-            <button class="pink-btn-ghost self-start" (click)="assignToMe()">assign to me</button>
-          }
-
-          @if (message()) { <p class="pink-error">{{ message() }}</p> }
-
-          <div class="flex justify-end gap-2 mt-3">
-            <button class="pink-btn-ghost" (click)="close()">cancel</button>
-            <button class="pink-btn" (click)="save()">save 💖</button>
-          </div>
-        </div>
-      </div>
-    }
-  `,
+  templateUrl: './findings-panel.component.html',
 })
 export class FindingsPanelComponent {
   protected readonly auth = inject(AuthStore);
@@ -111,21 +30,16 @@ export class FindingsPanelComponent {
 
   protected readonly severities = SEVERITIES;
   protected readonly statuses = STATUSES;
+  protected readonly label = statusLabel;
 
   protected readonly findings = signal<Finding[]>([]);
-  protected readonly search = signal('');
+  protected readonly filters = signal<Filters>(blankFilters());
   protected readonly loading = signal(false);
   protected readonly message = signal<string | null>(null);
   protected readonly mode = signal<Mode | null>(null);
   protected readonly selected = signal<Finding | null>(null);
   protected form = blankForm();
-
-  protected readonly visible = computed(() => {
-    const q = this.search().toLowerCase();
-    return this.findings().filter(
-      (f) => f.title.toLowerCase().includes(q) || f.affectedAsset.toLowerCase().includes(q),
-    );
-  });
+  private timer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     this.load();
@@ -134,34 +48,46 @@ export class FindingsPanelComponent {
   // same rules as the API policies, only used to hide buttons (the API still checks)
   protected canCreate() { return this.auth.hasRole('analyst') || this.auth.hasRole('pm'); }
   protected canAssign() { return this.canCreate(); }
-  protected canEdit(f: Finding) {
-    if (this.auth.hasRole('analyst') || this.auth.hasRole('pm')) return true;
-    // developers only on findings assigned to them
-    return this.auth.hasRole('developer') && !!f.assigneeId && f.assigneeId === this.auth.user()?.id;
+  protected canEdit() { return this.canCreate() || this.auth.hasRole('developer'); }
+
+  protected isOverdue(f: Finding) {
+    return !!f.dueDate && new Date(f.dueDate) < new Date() && !['Remediated', 'AcceptedRisk'].includes(f.status);
   }
 
   protected tagSeverity(s: string): TagSeverity {
     return ({ Critical: 'danger', High: 'warn', Medium: 'info', Low: 'success' } as Record<string, TagSeverity>)[s] ?? 'secondary';
   }
 
+  protected setFilter<K extends keyof Filters>(key: K, value: Filters[K]) {
+    this.filters.update((f) => ({ ...f, [key]: value }));
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => this.load(), 300); // wait a bit while typing
+  }
+
   protected load(): void {
+    const f = this.filters();
     this.loading.set(true);
-    this.api.list().subscribe({
-      next: (f) => { this.findings.set(f); this.loading.set(false); },
-      error: (e) => this.fail(e),
-    });
+    this.api
+      .list({
+        text: f.text, asset: f.asset, status: f.status, severity: f.severity,
+        assigneeId: f.mine ? this.auth.user()?.id : undefined,
+      })
+      .subscribe({
+        next: (r) => { this.findings.set(r); this.loading.set(false); },
+        error: (e) => this.fail(e),
+      });
   }
 
   protected openCreate() { this.form = blankForm(); this.message.set(null); this.mode.set('create'); }
   protected openEdit(f: Finding) {
     this.selected.set(f);
-    this.form = { ...blankForm(), title: f.title, description: f.description, status: f.status };
+    this.form = { ...blankForm(), title: f.title, description: f.description, status: f.status, severity: f.severity };
     this.message.set(null);
     this.mode.set('edit');
   }
   protected openAssign(f: Finding) {
     this.selected.set(f);
-    this.form = { ...blankForm(), assigneeId: f.assigneeId ?? '' };
+    this.form = { ...blankForm(), assigneeId: f.assigneeId ?? '', dueDate: f.dueDate?.slice(0, 10) ?? '' };
     this.message.set(null);
     this.mode.set('assign');
   }
@@ -171,13 +97,16 @@ export class FindingsPanelComponent {
   protected save(): void {
     const f = this.selected();
     const x = this.form;
+    // date input gives "2026-11-01", the API wants a full timestamp (end of that day)
+    const dueIso = x.dueDate ? new Date(`${x.dueDate}T23:59:59`).toISOString() : null;
+
     const req =
       this.mode() === 'create'
         ? this.api.create({ title: x.title, description: x.description, affectedAsset: x.affectedAsset, severity: x.severity, cvssScore: x.cvssScore })
         : this.mode() === 'edit' && f
-          ? this.api.update(f.id, { title: x.title, description: x.description, status: x.status })
+          ? this.api.update(f.id, { title: x.title, description: x.description, status: x.status, severity: x.severity })
           : this.mode() === 'assign' && f
-            ? this.api.assign(f.id, x.assigneeId.trim())
+            ? this.api.assign(f.id, x.assigneeId.trim(), dueIso)
             : null;
 
     req?.subscribe({

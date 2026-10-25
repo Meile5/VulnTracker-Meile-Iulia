@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -100,6 +101,15 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddSingleton<IAuthorizationHandler, FindingAuthorizationHandler>();
 
+builder.Services.AddRateLimiter(o =>
+{
+    o.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    // 5 reports per minute per IP
+    o.AddPolicy("public-form", ctx => RateLimitPartition.GetFixedWindowLimiter(
+        ctx.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1) }));
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -120,6 +130,8 @@ app.UseCors("Angular");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

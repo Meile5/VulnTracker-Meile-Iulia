@@ -4,21 +4,22 @@ import { FindingsPanelComponent } from './findings-panel.component';
 import { SlaPanelComponent } from './sla-panel.component';
 import { RolesPanelComponent } from './roles-panel.component';
 import { AuditPanelComponent } from './audit-panel.component';
+import {OverviewPanelComponent} from './overview-panel.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FindingsPanelComponent, SlaPanelComponent, RolesPanelComponent, AuditPanelComponent],
+  imports: [FindingsPanelComponent, SlaPanelComponent, RolesPanelComponent, AuditPanelComponent, OverviewPanelComponent],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
   protected readonly auth = inject(AuthStore);
-  protected readonly tab = signal('findings');
+  protected readonly tab = signal('overview')
 
   // only show tabs the role can use (the API checks again)
   protected readonly tabs = computed(() =>
     [
-      { id: 'findings', label: 'findings ✨', show: true },
+      { id: 'overview', label: 'overview 📊', show: true },
       { id: 'sla', label: 'SLA targets ⏰', show: this.auth.hasRole('pm') },
       { id: 'roles', label: 'user roles 👯', show: this.auth.hasRole('pm') },
       { id: 'audit', label: 'audit log 🔍', show: this.auth.hasRole('auditor') },

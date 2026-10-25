@@ -14,7 +14,7 @@ export class ReportComponent {
   protected description = '';
   protected asset = '';
   protected email = '';
-  protected readonly sent = signal(false);
+  protected readonly reference = signal<string | null>(null);
   protected readonly error = signal<string | null>(null);
 
   protected send() {
@@ -23,11 +23,16 @@ export class ReportComponent {
         title: this.title,
         description: this.description,
         affectedAsset: this.asset,
-        contactEmail: this.email.trim() || null,
+        contactEmail: this.email.trim(),
       })
       .subscribe({
-        next: () => this.sent.set(true),
-        error: () => this.error.set('could not send the report, try again'),
+        next: (r) => this.reference.set(r.reference),
+        error: (e) =>
+          this.error.set(
+            e.status === 429 ? 'too many reports, wait a minute and try again'
+            : e.status === 400 ? 'please check the fields, the email must be valid'
+            : 'could not send the report, try again',
+          ),
       });
   }
 }

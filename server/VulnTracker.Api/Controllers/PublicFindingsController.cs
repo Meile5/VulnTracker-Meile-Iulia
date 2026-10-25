@@ -1,15 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using VulnTracker.Api.Contracts;
+using VulnTracker.Application.Services;
 
 namespace VulnTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/public/findings")]
 [AllowAnonymous] // external reporter has no login, can only submit
-public class PublicFindingsController : ControllerBase
+[EnableRateLimiting("public-form")]
+public class PublicFindingsController(FindingService service) : ControllerBase
 {
     [HttpPost]
-    public IActionResult Submit(PublicDisclosureRequest request) =>
-        Accepted(); // nothing returned, so reporters can't read anything back
+    public async Task<IActionResult> Submit(PublicDisclosureRequest request, CancellationToken ct)
+    {
+        var id = await service.SubmitExternalAsync(
+            request.Title, request.Description, request.AffectedAsset, request.ContactEmail, ct);
+
+        // acknowledgement: only a reference number, nothing readable about internal data
+        return Accepted(new { reference = id });
+    }
 }

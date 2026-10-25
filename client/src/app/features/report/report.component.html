@@ -5,8 +5,8 @@
       no account needed, you can only send, not read anything back
     </p>
 
-    @if (sent()) {
-      <p class="pink-ok">thank you! we got your report 💌</p>
+    @if (reference(); as ref) {
+      <p class="pink-ok">thank you! we got your report 💌 your reference number is {{ ref }}</p>
     } @else {
       <label class="pink-label">title</label>
       <input class="pink-input" [(ngModel)]="title" />
@@ -14,13 +14,13 @@
       <textarea class="pink-input" rows="4" [(ngModel)]="description"></textarea>
       <label class="pink-label">affected system</label>
       <input class="pink-input" [(ngModel)]="asset" />
-      <label class="pink-label">your email (optional)</label>
+      <label class="pink-label">your email (so we can contact you)</label>
       <input type="email" class="pink-input" [(ngModel)]="email" />
       @if (error()) {
         <p class="pink-error">{{ error() }}</p>
       }
       <button class="pink-btn mt-2" (click)="send()"
-              [disabled]="!title.trim() || !description.trim() || !asset.trim()">
+              [disabled]="!title.trim() || !description.trim() || !asset.trim() || !email.trim()">
         send report 💖
       </button>
     }

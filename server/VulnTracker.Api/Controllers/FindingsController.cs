@@ -49,7 +49,7 @@ public class FindingsController(FindingService service, IAuthorizationService au
         var result = await authz.AuthorizeAsync(User, finding, FindingOperations.Update);
         if (!result.Succeeded) return Forbid();
 
-        return Ok(await service.UpdateAsync(finding, request.Title, request.Description, request.Status, ct));
+        return Ok(await service.UpdateAsync(finding, request.Title, request.Description, request.Status, request.Severity, ct));
     }
 
     [HttpPost("{id:guid}/assign")]
@@ -60,6 +60,6 @@ public class FindingsController(FindingService service, IAuthorizationService au
         var finding = await service.GetEntityAsync(id, ct);
         if (finding is null) return NotFound();
 
-        return Ok(await service.AssignAsync(finding, request.AssigneeId, ct));
+        return Ok(await service.AssignAsync(finding, request.AssigneeId, request.DueDate, ct));
     }
 }
