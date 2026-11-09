@@ -1,8 +1,9 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Finding, Summary } from '../models/finding.models';
+import { AppUser, Finding, Summary } from '../models/finding.models';
 
-const API = 'http://localhost:5286';
+const API = environment.apiUrl;
 const withCookie = { withCredentials: true }; // sends the login cookie
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +25,9 @@ export class FindingsService {
   assign(id: string, assigneeId: string, dueDate: string | null) {
     return this.http.post<Finding>(`${API}/api/findings/${id}/assign`, { assigneeId, dueDate }, withCookie);
   }
+  users() {
+    return this.http.get<AppUser[]>(`${API}/api/users`, withCookie);
+  }
   summary() {
     return this.http.get<Summary>(`${API}/api/reports/summary`, withCookie);
   }
@@ -41,3 +45,4 @@ export class FindingsService {
     return this.http.post<{ reference: string }>(`${API}/api/public/findings`, body);
   }
 }
+

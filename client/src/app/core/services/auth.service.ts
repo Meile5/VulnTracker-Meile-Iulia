@@ -1,8 +1,9 @@
+import { environment } from '../../../environments/environment';
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-const API_BASE = 'http://localhost:5286';
+const API_BASE = environment.apiUrl;
 
 export interface CurrentUser {
   name: string;
@@ -48,3 +49,4 @@ export class AuthService {
   }
 
 }
+

@@ -1,4 +1,4 @@
-﻿<div class="pink-card">
+<div class="pink-card">
   <div class="flex flex-wrap items-end gap-3 mb-4">
     <div>
       <label class="pink-label">search</label>
@@ -58,7 +58,7 @@
         <td>{{ label(f.status) }}</td>
         <td>{{ f.source }}</td>
         <td [class]="isOverdue(f) ? 'text-red-600 font-bold' : ''">{{ f.dueDate ? f.dueDate.slice(0, 10) : '-' }}</td>
-        <td>{{ f.assigneeId ? (f.assigneeId === auth.user()?.id ? 'you' : 'assigned') : '-' }}</td>
+        <td>{{ assigneeName(f.assigneeId) }}</td>
         <td class="flex gap-2 justify-end">
           @if (canEdit()) {
             <button class="pink-btn-ghost" (click)="openEdit(f)">edit</button>
@@ -112,8 +112,13 @@
       }
 
       @if (m === 'assign') {
-        <label class="pink-label">Keycloak user ID</label>
-        <input class="pink-input" [(ngModel)]="form.assigneeId" placeholder="paste a user id" />
+        <label class="pink-label">assign to</label>
+        <select class="pink-input" [(ngModel)]="form.assigneeId">
+          <option value="">choose a user</option>
+          @for (u of users(); track u.id) {
+            <option [value]="u.id">{{ u.displayName }} ({{ u.roles.join(', ') || 'no role' }})</option>
+          }
+        </select>
         <button class="pink-btn-ghost self-start" (click)="assignToMe()">assign to me</button>
         <label class="pink-label">due date (SLA target)</label>
         <input type="date" class="pink-input" [(ngModel)]="form.dueDate" />
@@ -125,7 +130,7 @@
 
       <div class="flex justify-end gap-2 mt-3">
         <button class="pink-btn-ghost" (click)="close()">cancel</button>
-        <button class="pink-btn" (click)="save()">save 💖</button>
+        <button class="pink-btn" (click)="save()" [disabled]="m === 'assign' && !form.assigneeId">save 💖</button>
       </div>
     </div>
   </div>

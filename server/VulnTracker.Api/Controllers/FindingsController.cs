@@ -13,6 +13,8 @@ namespace VulnTracker.Api.Controllers;
 [Authorize]
 public class FindingsController(FindingService service, IAuthorizationService authz) : ControllerBase
 {
+    private string Actor => User.Identity?.Name ?? "unknown";
+    
     [HttpGet]
     [Authorize(Policy = Policies.CanViewFindings)]
     public async Task<ActionResult<IReadOnlyList<FindingResponse>>> Search(
@@ -32,7 +34,7 @@ public class FindingsController(FindingService service, IAuthorizationService au
     public async Task<ActionResult<FindingResponse>> Create(
         CreateFindingRequest request, CancellationToken ct)
     {
-        var created = await service.CreateAsync(request, ct);
+        var created = await service.CreateAsync(request, Actor, ct);
         return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
     
@@ -49,7 +51,7 @@ public class FindingsController(FindingService service, IAuthorizationService au
         var result = await authz.AuthorizeAsync(User, finding, FindingOperations.Update);
         if (!result.Succeeded) return Forbid();
 
-        return Ok(await service.UpdateAsync(finding, request.Title, request.Description, request.Status, request.Severity, ct));
+        return Ok(await service.UpdateAsync(finding, request.Title, request.Description, request.Status, request.Severity, Actor, ct));
     }
 
     [HttpPost("{id:guid}/assign")]
@@ -60,6 +62,5 @@ public class FindingsController(FindingService service, IAuthorizationService au
         var finding = await service.GetEntityAsync(id, ct);
         if (finding is null) return NotFound();
 
-        return Ok(await service.AssignAsync(finding, request.AssigneeId, request.DueDate, ct));
-    }
+        return Ok(await service.AssignAsync(finding, request.AssigneeId, request.DueDate, Actor, ct));    }
 }

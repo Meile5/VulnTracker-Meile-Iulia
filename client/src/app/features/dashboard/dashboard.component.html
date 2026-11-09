@@ -1,4 +1,4 @@
-﻿<div class="page-bg p-4 md:p-8">
+<div class="page-bg p-4 md:p-8">
   <header class="flex flex-wrap items-center gap-3 mb-6">
     <h1 class="pink-title text-4xl">VulnTracker 🎀</h1>
     <span class="flex-1"></span>
@@ -20,6 +20,7 @@
   @switch (tab()) {
     @case ('overview') { <app-overview-panel /> }
     @case ('sla') { <app-sla-panel /> }
+    @case ('findings') { <app-findings-panel /> }
     @case ('roles') { <app-roles-panel /> }
     @case ('audit') { <app-audit-panel /> }
   }

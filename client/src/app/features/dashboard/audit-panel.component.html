@@ -5,6 +5,20 @@
   } @else if (logs().length === 0) {
     <p>no audit events yet ✨</p>
   } @else {
-    <pre class="text-sm">{{ logs() | json }}</pre>
+    <table class="w-full text-sm">
+      <thead>
+      <tr class="text-left text-pink-700"><th>when</th><th>who</th><th>action</th><th>details</th></tr>
+      </thead>
+      <tbody>
+        @for (l of $any(logs()); track l.id) {
+          <tr class="border-t border-pink-100">
+            <td>{{ l.timestamp.slice(0, 19).replace('T', ' ') }}</td>
+            <td>{{ l.actor }}</td>
+            <td>{{ l.action }}</td>
+            <td>{{ l.details }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
   }
 </div>

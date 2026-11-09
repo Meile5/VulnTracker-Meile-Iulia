@@ -1,11 +1,11 @@
-﻿import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { AuthStore } from '../../core/stores/auth.store';
 import { FindingsService } from '../../core/services/findings.service';
-import { Finding, SEVERITIES, STATUSES, statusLabel } from '../../core/models/finding.models';
+import { AppUser, Finding, SEVERITIES, STATUSES, statusLabel } from '../../core/models/finding.models';
 
 type Mode = 'create' | 'edit' | 'assign';
 type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
@@ -33,6 +33,7 @@ export class FindingsPanelComponent {
   protected readonly label = statusLabel;
 
   protected readonly findings = signal<Finding[]>([]);
+  protected readonly users = signal<AppUser[]>([]);
   protected readonly filters = signal<Filters>(blankFilters());
   protected readonly loading = signal(false);
   protected readonly message = signal<string | null>(null);
@@ -42,6 +43,7 @@ export class FindingsPanelComponent {
   private timer?: ReturnType<typeof setTimeout>;
 
   constructor() {
+    if (this.canAssign()) this.loadUsers();
     this.load();
   }
 
@@ -91,6 +93,19 @@ export class FindingsPanelComponent {
     this.message.set(null);
     this.mode.set('assign');
   }
+  private loadUsers(): void {
+    this.api.users().subscribe({
+      next: (u) => this.users.set(u),
+      error: () => this.message.set('could not load the user list'),
+    });
+  }
+
+  protected assigneeName(id?: string | null): string {
+    if (!id) return '-';
+    if (id === this.auth.user()?.id) return 'you';
+    return this.users().find((u) => u.id === id)?.displayName ?? 'assigned';
+  }
+
   protected assignToMe() { this.form.assigneeId = this.auth.user()?.id ?? ''; }
   protected close() { this.mode.set(null); }
 

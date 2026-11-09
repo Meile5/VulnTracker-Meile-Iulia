@@ -1,9 +1,10 @@
-﻿import { computed, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
-const API = 'http://localhost:5286';
+const API = environment.apiUrl;
 
 export interface AuthUser {
   id: string;
@@ -54,3 +55,4 @@ export const AuthStore = signalStore(
     },
   })),
 );
+

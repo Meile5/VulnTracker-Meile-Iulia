@@ -25,3 +25,11 @@ export interface Summary {
   openBySeverity: Record<string, number>;
   byStatus: Record<string, number>;
 }
+
+export interface AppUser {
+  id: string;
+  username: string;
+  email?: string | null;
+  displayName: string;
+  roles: string[];
+}

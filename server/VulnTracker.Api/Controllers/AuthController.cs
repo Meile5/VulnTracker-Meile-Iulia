@@ -11,18 +11,17 @@ namespace VulnTracker.Api.Controllers;
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    private const string AngularOrigin = "http://localhost:4200";
+    private static readonly string[] AllowedOrigins = ["http://localhost:4200"];
 
     [HttpGet("login")]
-    public IActionResult Login([FromQuery] string? returnUrl)
+    public IActionResult Login([FromQuery] string returnUrl = "/")
     {
-        // only allow sending people back to the Angular app, so this can't be used as an open redirect
-        var target = Uri.TryCreate(returnUrl, UriKind.Absolute, out var uri) && uri.GetLeftPart(UriPartial.Authority) == AngularOrigin
-            ? uri.ToString()
-            : $"{AngularOrigin}/home";
+        var ok = Uri.TryCreate(returnUrl, UriKind.Absolute, out var u)
+                 && AllowedOrigins.Contains(u.GetLeftPart(UriPartial.Authority));
+        if (!ok && !(returnUrl.StartsWith('/') && !returnUrl.StartsWith("//")))
+            returnUrl = "/";
 
-        return Challenge(
-            new AuthenticationProperties { RedirectUri = target },
+        return Challenge(new AuthenticationProperties { RedirectUri = returnUrl },
             OpenIdConnectDefaults.AuthenticationScheme);
     }
 

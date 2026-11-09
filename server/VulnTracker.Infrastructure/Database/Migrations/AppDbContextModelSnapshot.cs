@@ -17,10 +17,39 @@ namespace VulnTracker.Infrastructure.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.31")
+                .HasAnnotation("ProductVersion", "10.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("VulnTracker.Domain.Entities.AuditEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("FindingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditEntries");
+                });
 
             modelBuilder.Entity("VulnTracker.Domain.Entities.AuditLogEntry", b =>
                 {
@@ -124,6 +153,19 @@ namespace VulnTracker.Infrastructure.Database.Migrations
                     b.HasIndex("Status");
 
                     b.ToTable("findings", (string)null);
+                });
+
+            modelBuilder.Entity("VulnTracker.Domain.Entities.SlaPolicy", b =>
+                {
+                    b.Property<int>("Severity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Days")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Severity");
+
+                    b.ToTable("SlaPolicies");
                 });
 #pragma warning restore 612, 618
         }

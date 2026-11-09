@@ -1,4 +1,4 @@
-services:
+﻿services:
   db:
     image: postgres:17
     environment:
@@ -9,15 +9,11 @@ services:
       - "15432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  api:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-    depends_on:
-      - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.6
@@ -25,11 +21,36 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # Address the browser uses; also the token issuer
+      KC_HOSTNAME: "http://localhost:8081"
+      # Lets the API container call Keycloak as keycloak:8080
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     ports:
       - "8081:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
       - ./keycloak/vulntracker-realm.json:/opt/keycloak/data/import/vulntracker-realm.json:ro
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+      Keycloak__AdminBaseUrl: "http://keycloak:8080"
+      Keycloak__Realm: "vulntracker"
+      # Browser-facing address = issuer
+      Authentication__Keycloak__Authority: "http://localhost:8081/realms/vulntracker"
+      # Address the container uses to fetch metadata and signing keys
+      Authentication__Keycloak__MetadataAddress: "http://keycloak:8080/realms/vulntracker/.well-known/openid-configuration"
+      Authentication__Keycloak__ClientId: ${OIDC_CLIENT_ID}
+      Authentication__Keycloak__ClientSecret: ${OIDC_CLIENT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
 
 volumes:
   pgdata:
