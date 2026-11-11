@@ -15,7 +15,7 @@ public class FindingConfiguration : IEntityTypeConfiguration<Finding>
         b.Property(f => f.Description).IsRequired();  
         b.Property(f => f.AffectedAsset).HasMaxLength(200).IsRequired();
         b.Property(f => f.CvssScore).HasPrecision(3, 1);
-        b.Property(f => f.ReporterEmail).HasMaxLength(320);
+        b.Property(f => f.ReporterEmail).HasMaxLength(1000);
         b.Property(f => f.AssigneeId).HasMaxLength(100);
 
         b.Property(f => f.Severity).HasConversion<string>().HasMaxLength(20);
