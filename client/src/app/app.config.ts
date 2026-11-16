@@ -2,7 +2,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import { routes } from './app.routes';
 import { AuthStore } from './core/stores/auth.store';
 
@@ -13,6 +13,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(), // AuthStore needs HttpClient
     // asks the API who is logged in before any page shows, so the guard knows the answer
     provideAppInitializer(() => inject(AuthStore).loadUser()),
-    providePrimeNG({ theme: { preset: Aura } }),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: { darkModeSelector: false } // always light
+      }
+    })
   ],
 };

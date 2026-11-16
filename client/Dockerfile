@@ -1,7 +1,7 @@
 # build stage: dependencies are installed and compiled inside the container only
 FROM node:24-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci
 COPY . .
 RUN npm run build -- --configuration production
