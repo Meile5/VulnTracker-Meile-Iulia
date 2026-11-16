@@ -21,9 +21,7 @@
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      # Address the browser uses; also the token issuer
       KC_HOSTNAME: "http://localhost:8081"
-      # Lets the API container call Keycloak as keycloak:8080
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     ports:
       - "8081:8080"
@@ -53,7 +51,14 @@
         condition: service_healthy
       keycloak:
         condition: service_started
-
+        
+  client:
+    build: ./client
+    ports:
+      - "4200:8080"
+    depends_on:
+      - api
+      
 volumes:
   pgdata:
   keycloak_data:
