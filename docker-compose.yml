@@ -34,7 +34,7 @@
   api:
     build: .
     ports:
-      - "8080:8080"
+      - "5286:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__Default: "Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
@@ -46,6 +46,8 @@
       Authentication__Keycloak__MetadataAddress: "http://keycloak:8080/realms/vulntracker/.well-known/openid-configuration"
       Authentication__Keycloak__ClientId: ${OIDC_CLIENT_ID}
       Authentication__Keycloak__ClientSecret: ${OIDC_CLIENT_SECRET}
+      Crypto__CurrentKeyId: "1"
+      Crypto__Keys__1: ${CRYPTO_KEY_1}
     depends_on:
       db:
         condition: service_healthy
