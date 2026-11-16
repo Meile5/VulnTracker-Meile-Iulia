@@ -18,7 +18,7 @@ export class SlaPanelComponent {
 
   protected save() {
     this.api.setSla(this.severity, this.days).subscribe({
-      next: () => this.msg.set('saved ✨ (the API is still a stub, it does not store it yet)'),
+      next: () => this.msg.set('saved ✨'),
       error: () => this.msg.set('could not save, only PMs can do this'),
     });
   }
