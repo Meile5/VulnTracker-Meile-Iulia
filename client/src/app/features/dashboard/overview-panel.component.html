@@ -12,26 +12,29 @@
 
     <div class="pink-card">
       <h2 class="pink-title text-2xl mb-2">open by severity</h2>
-      @for (r of severityRows(); track r.label) {
-        <div class="mb-2">
-          <div class="flex justify-between text-sm font-semibold"><span>{{ r.label }}</span><span>{{ r.count }}</span></div>
-          <div class="h-3 rounded-full bg-pink-100">
-            <div class="h-3 rounded-full bg-pink-500" [style.width.%]="r.pct"></div>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        @for (r of severityRows(); track r.label) {
+          <div class="rounded-2xl p-3 text-center"
+               [class]="r.label === 'Critical' ? 'bg-pink-500 text-white'
+                      : r.label === 'High' ? 'bg-pink-300 text-pink-900'
+                      : 'bg-pink-100 text-pink-700'">
+            <p class="text-3xl font-bold">{{ r.count }}</p>
+            <p class="text-sm font-semibold">{{ r.label }}</p>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
 
     <div class="pink-card md:col-span-2">
       <h2 class="pink-title text-2xl mb-2">by status</h2>
-      @for (r of statusRows(); track r.label) {
-        <div class="mb-2">
-          <div class="flex justify-between text-sm font-semibold"><span>{{ r.label }}</span><span>{{ r.count }}</span></div>
-          <div class="h-3 rounded-full bg-pink-100">
-            <div class="h-3 rounded-full bg-pink-500" [style.width.%]="r.pct"></div>
+      <div class="flex flex-wrap gap-3">
+        @for (r of statusRows(); track r.label) {
+          <div class="flex items-center gap-2 rounded-full bg-pink-100 py-2 pl-4 pr-2 text-sm font-semibold text-pink-700">
+            <span>{{ r.label }}</span>
+            <span class="rounded-full bg-pink-500 px-3 py-1 text-white">{{ r.count }}</span>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
   </div>
 } @else {

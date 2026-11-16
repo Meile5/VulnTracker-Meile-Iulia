@@ -14,6 +14,7 @@ using VulnTracker.Application.Services;
 using VulnTracker.Infrastructure;
 using VulnTracker.Infrastructure.Database;
 using VulnTracker.Infrastructure.Repositories;
+using VulnTracker.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -172,6 +173,8 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+    if (app.Environment.IsDevelopment())
+        await DemoDataSeeder.SeedAsync(db); 
 }
 
 if (app.Environment.IsDevelopment())
