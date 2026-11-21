@@ -3,8 +3,13 @@ using VulnTracker.Domain.Enums;
 
 namespace VulnTracker.Api.Contracts;
 
-public record UpdateFindingRequest(string? Title, string? Description, FindingStatus? Status, Severity? Severity);
-public record AssignFindingRequest(string AssigneeId, DateTimeOffset? DueDate);
+public record UpdateFindingRequest(
+    [StringLength(200)] string? Title,
+    [StringLength(5000)] string? Description,
+    FindingStatus? Status, Severity? Severity);
+public record AssignFindingRequest(
+    [Required, StringLength(100)] string AssigneeId,
+    DateTimeOffset? DueDate);
 public record SetSlaRequest(string Severity, int Days);
 public record UpdateUserRolesRequest(string[] Roles);
 
